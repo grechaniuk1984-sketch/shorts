@@ -1,34 +1,17 @@
-name: Generate Shorts
+# YouTube Shorts: Crazy History Facts (10 відео)
 
-on:
-  workflow_dispatch:
-    inputs:
-      ids:
-        description: "Video ids, e.g. '1 4 7' (empty = all 10)"
-        required: false
-        default: ""
+## Запуск безкоштовно в хмарі (ПК і телефон можуть бути вимкнені)
+1. Отримай безкоштовний ключ Pixabay: зареєструйся на pixabay.com, потім відкрий https://pixabay.com/api/docs/ — ключ буде в тексті сторінки (Pexels теж підтримується).
+2. Створи репозиторій на GitHub (public = безлімітні хвилини) і завантаж туди всі файли цієї папки.
+3. Repo → Settings → Secrets and variables → Actions → New secret:
+   назва `PIXABAY_API_KEY`, значення — твій ключ.
+4. Вкладка Actions → "Generate Shorts" → Run workflow.
+5. Через ~10-20 хв у запуску з'явиться архів `shorts` (Artifacts) — там 10 mp4 і txt із назвою та описом для кожного.
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - name: Install ffmpeg and fonts
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg fonts-dejavu-core
-      - run: pip install -r requirements.txt
-      - name: Generate videos
-        env:
-          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
-          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
-        run: python make_videos.py ${{ github.event.inputs.ids }}
-      - uses: actions/upload-artifact@v4
-        with:
-          name: shorts
-          path: output/
-          retention-days: 14
+## Музика (необов'язково)
+Поклади royalty-free mp3 (напр. з YouTube Audio Library) у папку `music/`.
+
+## Налаштування
+- Голос: змінна `VOICE` (en-US-GuyNeural, en-US-AndrewNeural, en-GB-RyanNeural).
+- Нові теми: додай записи в `scripts.json` (hook, script, keywords для пошуку відео).
+- Локально: `pip install -r requirements.txt`, потрібен ffmpeg, далі `python make_videos.py`.
